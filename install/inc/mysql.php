@@ -33,7 +33,7 @@ if (!defined('LICENSE'))
 {
 	exit('Access Denied');
 }
-
+#$mysql_link = mysqli_connect(DBHOST,DBUSER,DBPASSWORD);
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -42,10 +42,11 @@ if (!defined('LICENSE'))
 
 	function query_basic($query)
 	{
-		$result = mysql_query($query);
+                $mysql_link = mysqli_connect(DBHOST,DBUSER,DBPASSWORD,DBNAME);
+		$result = mysqli_query($mysql_link, $query);
 		if ($result == FALSE)
 		{
-			$msg = "\r\n<br /><b>Invalid query</b> : ".mysql_error()."\n";
+			$msg = "\r\n<br /><b>Invalid query</b> : ".mysqli_error($mysql_link)."\n";
 			echo $msg;
 		}
 	}
