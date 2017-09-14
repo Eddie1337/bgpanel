@@ -43,7 +43,7 @@ if (!$connection)	// Return error if connection is broken
 }
 
 
-$db_connection = mysqli_select_db(DBNAME);	// Select our database
+$db_connection = mysqli_select_db($connection, DBNAME);	// Select our database
 if (!$db_connection)	// Return error	if error happened with database
 {
 	exit("<html><head></head><body><b>Critical Error!!!</b><br />MySQL Error!</body></html>");
