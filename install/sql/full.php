@@ -72,14 +72,14 @@ $systemurl = substr($pageURL, 0, -41);
 //MySQL
 
 
-$mysql_link = mysql_connect(DBHOST,DBUSER,DBPASSWORD);
+$mysql_link = mysqli_connect(DBHOST,DBUSER,DBPASSWORD);
 if (!$mysql_link)
 {
-	die('Could not connect to MySQL: '.mysql_error());
+	die('Could not connect to MySQL: '.mysqli_error());
 }
 else
 {
-	$mysql_database_link = mysql_select_db(DBNAME);
+	$mysql_database_link = mysqli_select_db($mysql_link, DBNAME);
 	if ($mysql_database_link == FALSE)
 	{
 		echo "Could not connect to MySQL database";
@@ -459,7 +459,7 @@ else
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
-		mysql_close($mysql_link);
+		mysqli_close($mysql_link);
 	}
 }
 
