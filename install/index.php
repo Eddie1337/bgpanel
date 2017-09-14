@@ -309,7 +309,7 @@ else if ($_GET['step'] == 'one')
 ?>
 <?php
 
-	if (!extension_loaded('mysql'))
+	if (!extension_loaded('mysqli'))
 	{
 ?>
 						<tr class="error">
@@ -330,14 +330,14 @@ else if ($_GET['step'] == 'one')
 						</tr>
 <?php
 
-		$mysql_link = @mysql_connect(DBHOST,DBUSER,DBPASSWORD);
-		if ($mysql_link == FALSE)
+		$mysql_link =  mysqli_connect(DBHOST,DBUSER,DBPASSWORD);
+		if (mysqli_connect_errno())
 		{
 ?>
 						<tr class="error">
 							<td>Checking for MySQL server connection</td>
 							<td><span class="label label-important">FAILED</span></td>
-							<td>Could not connect to MySQL: "<?php echo mysql_error(); ?>"</td>
+							<td>Could not connect to MySQL: "<?php echo mysqli_connect_error(); ?>"</td>
 						</tr>
 <?php
 			$error = TRUE;
@@ -352,14 +352,14 @@ else if ($_GET['step'] == 'one')
 						</tr>
 <?php
 
-			$mysql_database_link = @mysql_select_db(DBNAME);
+			$mysql_database_link = @mysqli_select_db($mysql_link, DBNAME);
 			if ($mysql_database_link == FALSE)
 			{
 ?>
 						<tr class="error">
 							<td>Checking for MySQL database</td>
 							<td><span class="label label-important">FAILED</span></td>
-							<td>Could not connect to MySQL database: "<?php echo mysql_error(); ?>"</td>
+							<td>Could not connect to MySQL database: "<?php echo mysqli_connect_error(); ?>"</td>
 						</tr>
 <?php
 				$error = TRUE;
@@ -374,7 +374,7 @@ else if ($_GET['step'] == 'one')
 						</tr>
 <?php
 			}
-			mysql_close($mysql_link);
+			mysqli_close($mysql_link);
 		}
 	}
 
@@ -676,35 +676,35 @@ else if ($_GET['step'] == 'two')
 				<h2>Checking for existing databases . . . . .</h2>
 <?php
 
-	$mysql_link = @mysql_connect(DBHOST,DBUSER,DBPASSWORD);
+	$mysql_link = @mysqli_connect(DBHOST,DBUSER,DBPASSWORD);
 	if (!$mysql_link)
 	{
-		exit('Could not connect to MySQL: '.mysql_error());
+		exit('Could not connect to MySQL: '.mysqli_error());
 	}
 	else
 	{
-		$mysql_database_link = mysql_select_db(DBNAME);
+		$mysql_database_link = mysqli_select_db($mysql_link, DBNAME);
 		if ($mysql_database_link == FALSE)
 		{
-			exit('Could not connect to MySQL database: '.mysql_error());
+			exit('Could not connect to MySQL database: '.mysqli_error());
 		}
 		else
 		{
-			$tables = mysql_query('SHOW TABLES');
-			$rowsTables = mysql_fetch_array($tables);
+			$tables = mysqli_query($mysql_link, 'SHOW TABLES');
+			$rowsTables = mysqli_fetch_array($tables);
 
 			if (!empty($rowsTables))
 			{
-				while ($rowsTables = mysql_fetch_array($tables))
+				while ($rowsTables = mysqli_fetch_array($mysql_link, $tables))
 				{
 					if ($rowsTables[0] == DBPREFIX.'config')
 					{
-						$currentVersion = mysql_fetch_assoc(mysql_query( "SELECT `value` FROM `".DBPREFIX."config` WHERE `setting` = 'panelversion' LIMIT 1" ));
+						$currentVersion = mysqli_fetch_assoc(mysql_query( "SELECT `value` FROM `".DBPREFIX."config` WHERE `setting` = 'panelversion' LIMIT 1" ));
 					}
 				}
 			}
 
-			mysql_close($mysql_link);
+			mysqli_close($mysql_link);
 		}
 	}
 
